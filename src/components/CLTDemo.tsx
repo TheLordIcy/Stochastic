@@ -312,9 +312,9 @@ export default function CLTDemo() {
             style={{
               width: '100%',
               padding: '12px 16px',
-              background: running ? 'var(--bg)' : 'linear-gradient(135deg, #253745 0%, #4a5c6a 100%)',
-              color: 'var(--text)',
-              border: '1px solid var(--border)',
+              background: running ? 'var(--bg)' : 'var(--accent)',
+              color: running ? 'var(--text)' : '#0b0f19',
+              border: '1px solid var(--accent)',
               borderRadius: '8px',
               cursor: running ? 'not-allowed' : 'pointer',
               fontWeight: 600,
