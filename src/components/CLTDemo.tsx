@@ -14,6 +14,8 @@ import {
   Legend,
 } from 'chart.js';
 import type { CSSProperties } from 'react';
+import { useTheme } from '../ThemeContext';
+import { cssVar } from '../utils/theme';
 import type { TooltipItem } from 'chart.js';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, LineController, LineElement, PointElement, Title, Tooltip, Legend);
@@ -24,6 +26,7 @@ const NUM_BINS = 40;
 const LLN_POINTS = 200;
 
 export default function CLTDemo() {
+  const { mode } = useTheme();
   const [distribution, setDistribution] = useState<Distribution>('exponential');
   const [n, setN] = useState<number>(30);
   const [trials, setTrials] = useState<number>(5000);
@@ -133,21 +136,22 @@ export default function CLTDemo() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartData = useMemo<any>(() => {
     if (!histogram) return null;
+    void mode;
     return {
       labels: histogram.binLabels,
       datasets: [
         {
           label: 'simulated means',
           data: histogram.density,
-          backgroundColor: 'rgba(129, 140, 248, 0.65)',
-          borderColor: '#818cf8',
+          backgroundColor: cssVar('--accent'),
+          borderColor: cssVar('--accent'),
           borderWidth: 1,
         },
         {
           label: 'predicted N(μ, σ²/n)',
           data: histogram.theoretical,
           type: 'line' as const,
-          borderColor: '#f472b6',
+          borderColor: cssVar('--muted'),
           borderWidth: 2.5,
           pointRadius: 0,
           fill: false,
@@ -155,7 +159,7 @@ export default function CLTDemo() {
         },
       ],
     };
-  }, [histogram]);
+  }, [histogram, mode]);
 
   const chartOptions = {
     responsive: true,
@@ -163,7 +167,7 @@ export default function CLTDemo() {
     plugins: {
       legend: {
         position: 'top' as const,
-        labels: { color: '#9ca3af', font: { size: 13 } },
+        labels: { color: cssVar('--muted'), font: { size: 13 } },
       },
       title: { display: false },
       tooltip: {
@@ -178,12 +182,12 @@ export default function CLTDemo() {
     interaction: { mode: 'index' as const, intersect: false },
     scales: {
       x: {
-        title: { display: true, text: `sample mean (μ = ${meanDist.toFixed(3)})`, color: '#9ca3af' },
-        ticks: { color: '#9ca3af', maxTicksLimit: 8 },
+        title: { display: true, text: `sample mean (μ = ${meanDist.toFixed(3)})`, color: cssVar('--muted') },
+        ticks: { color: cssVar('--muted'), maxTicksLimit: 8 },
       },
       y: {
-        title: { display: true, text: 'Density', color: '#9ca3af' },
-        ticks: { color: '#9ca3af' },
+        title: { display: true, text: 'Density', color: cssVar('--muted') },
+        ticks: { color: cssVar('--muted') },
         beginAtZero: true,
       },
     },
@@ -192,6 +196,7 @@ export default function CLTDemo() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const llnChartData = useMemo<any>(() => {
     if (runningMeans.length === 0) return null;
+    void mode;
     const labels = runningMeans.map((_, i) => (i + 1));
     return {
       labels,
@@ -199,8 +204,8 @@ export default function CLTDemo() {
         {
           label: 'running mean of sample means',
           data: runningMeans,
-          borderColor: '#f472b6',
-          backgroundColor: 'rgba(244, 114, 182, 0.2)',
+          borderColor: cssVar('--muted'),
+          backgroundColor: cssVar('--muted'),
           borderWidth: 2,
           pointRadius: 0,
           tension: 0.2,
@@ -209,7 +214,7 @@ export default function CLTDemo() {
         {
           label: `true μ = ${meanDist.toFixed(4)}`,
           data: labels.map(() => meanDist),
-          borderColor: '#818cf8',
+          borderColor: cssVar('--accent'),
           borderWidth: 2,
           borderDash: [6, 4],
           pointRadius: 0,
@@ -217,23 +222,23 @@ export default function CLTDemo() {
         },
       ],
     };
-  }, [runningMeans, meanDist]);
+  }, [runningMeans, meanDist, mode]);
 
   const llnChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'top' as const, labels: { color: '#9ca3af', font: { size: 13 } } },
+      legend: { position: 'top' as const, labels: { color: cssVar('--muted'), font: { size: 13 } } },
       title: { display: false },
     },
     scales: {
       x: {
-        title: { display: true, text: 'trials', color: '#9ca3af' },
-        ticks: { color: '#9ca3af', maxTicksLimit: 8 },
+        title: { display: true, text: 'trials', color: cssVar('--muted') },
+        ticks: { color: cssVar('--muted'), maxTicksLimit: 8 },
       },
       y: {
-        title: { display: true, text: 'running mean', color: '#9ca3af' },
-        ticks: { color: '#9ca3af' },
+        title: { display: true, text: 'running mean', color: cssVar('--muted') },
+        ticks: { color: cssVar('--muted') },
       },
     },
   };
@@ -251,10 +256,10 @@ export default function CLTDemo() {
         {/* controls */}
         <aside style={{ flex: '1 1 300px', maxWidth: '360px', display: 'flex', flexDirection: 'column', gap: '28px', textAlign: 'left' }}>
           <header style={{ margin: 0 }}>
-            <h1 style={{ margin: 0, fontSize: '34px', fontWeight: 600, letterSpacing: '-0.5px' }}>
+            <h1 className="title-serif" style={{ margin: 0, fontSize: '40px', fontWeight: 600, letterSpacing: '-0.5px' }}>
               Central Limit Theorem
             </h1>
-            <p style={{ margin: '8px 0 0', color: 'var(--muted)', fontSize: '15px' }}>
+            <p style={{ margin: '8px 0 0', color: 'var(--muted)', fontSize: '19px' }}>
               See randomness converge.
             </p>
           </header>
@@ -276,7 +281,7 @@ export default function CLTDemo() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label htmlFor="n" style={{ ...labelStyle, display: 'flex', justifyContent: 'space-between' }}>
               <span>Sample size n</span>
-              <strong style={{ color: 'var(--text)', fontWeight: 500 }}>{n}</strong>
+              <strong className="num" style={{ color: 'var(--text)', fontWeight: 500 }}>{n}</strong>
             </label>
             <input
               id="n"
@@ -292,7 +297,7 @@ export default function CLTDemo() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label htmlFor="trials" style={{ ...labelStyle, display: 'flex', justifyContent: 'space-between' }}>
               <span>Trials</span>
-              <strong style={{ color: 'var(--text)', fontWeight: 500 }}>{trials.toLocaleString()}</strong>
+              <strong className="num" style={{ color: 'var(--text)', fontWeight: 500 }}>{trials.toLocaleString()}</strong>
             </label>
             <input
               id="trials"
@@ -313,12 +318,12 @@ export default function CLTDemo() {
               width: '100%',
               padding: '12px 16px',
               background: running ? 'var(--bg)' : 'var(--accent)',
-              color: running ? 'var(--text)' : '#0b0f19',
+              color: running ? 'var(--text)' : 'var(--bg)',
               border: '1px solid var(--accent)',
               borderRadius: '8px',
               cursor: running ? 'not-allowed' : 'pointer',
               fontWeight: 600,
-              fontSize: '15px',
+              fontSize: '19px',
               boxShadow: 'none',
             }}
           >
@@ -326,8 +331,8 @@ export default function CLTDemo() {
           </button>
 
           {sampleMeans.length > 0 && (
-            <div style={{ border: '1px solid var(--border)', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '13px', background: 'var(--surface)' }}>
-              <h3 style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
+            <div style={{ border: '1px solid var(--border)', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '17px', background: 'var(--surface)' }}>
+              <h3 style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
                 Theoretical (CLT)
               </h3>
               <StatRow label="Mean μ" value={meanDist.toFixed(5)} />
@@ -335,23 +340,23 @@ export default function CLTDemo() {
               <StatRow label="Std Error σ/√n" value={Math.sqrt(varDist / n).toFixed(5)} />
               <StatRow label="# Means" value={sampleMeans.length.toLocaleString()} />
               <div style={{ height: '1px', background: 'var(--border)', margin: '6px 0' }} />
-              <h3 style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
+              <h3 style={{ margin: '0 0 4px', fontSize: '17px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
                 Live Running Mean (LLN)
               </h3>
-              <p style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: 'var(--text)' }}>
+              <p className="num" style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: 'var(--text)' }}>
                 {runningMean.toFixed(5)}
               </p>
-              <p style={{ margin: '4px 0 0', fontSize: '12px', color: 'var(--muted)' }}>
+              <p className="num" style={{ margin: '4px 0 0', fontSize: '16px', color: 'var(--muted)' }}>
                 → converges to μ = {meanDist.toFixed(5)} as trials → ∞
               </p>
             </div>
           )}
 
           <div style={{ border: '1px solid var(--border)', borderRadius: '14px', padding: '20px 24px', background: 'transparent' }}>
-            <h2 style={{ margin: '0 0 8px', fontSize: '13px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
+            <h2 style={{ margin: '0 0 8px', fontSize: '17px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
               What's happening?
             </h2>
-            <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.6, color: '#d1d5db' }}>
+            <p style={{ margin: 0, fontSize: '19px', lineHeight: 1.6, color: 'var(--accent)' }}>
               Each bar counts how often a sample of 30 exponential draws averaged to
               that value. The curve is the normal distribution the CLT predicts,
               with standard error σ/√n = 0.183. Raise n and the bars settle onto it.
@@ -374,7 +379,7 @@ export default function CLTDemo() {
             ) : (
               <Placeholder msg="Pick parameters and hit Run Simulation to see the sample means." />
             )}
-            <div style={{ display: 'flex', gap: '24px', marginTop: '12px', fontSize: '13px', color: 'var(--muted)' }}>
+            <div style={{ display: 'flex', gap: '24px', marginTop: '12px', fontSize: '17px', color: 'var(--muted)' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                 <i style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: 0, background: 'var(--accent)' }} />
                 simulated means
@@ -387,7 +392,7 @@ export default function CLTDemo() {
           </div>
 
           <div style={cardStyle}>
-            <h2 style={{ margin: '0 0 8px', fontSize: '13px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
+            <h2 style={{ margin: '0 0 8px', fontSize: '17px', fontWeight: 500, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--accent)' }}>
               Running Average (Law of Large Numbers)
             </h2>
             {llnChartData ? (
@@ -410,7 +415,7 @@ export default function CLTDemo() {
 }
 
 const labelStyle: CSSProperties = {
-  fontSize: '13px',
+  fontSize: '17px',
   color: 'var(--muted)',
 };
 
@@ -420,21 +425,21 @@ const selectStyle: CSSProperties = {
   border: '1px solid var(--border)',
   borderRadius: '8px',
   padding: '10px 12px',
-  fontSize: '15px',
+  fontSize: '19px',
 };
 
 function StatRow({ label, value }: { label: string; value: string }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '17px', marginBottom: '4px' }}>
       <span style={{ color: 'var(--muted)' }}>{label}</span>
-      <span style={{ fontWeight: 600, color: 'var(--text)' }}>{value}</span>
+      <span className="num" style={{ fontWeight: 600, color: 'var(--text)' }}>{value}</span>
     </div>
   );
 }
 
 function Placeholder({ msg, height = 400 }: { msg: string; height?: number }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: `${height}px`, color: 'var(--muted)', fontSize: '15px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: `${height}px`, color: 'var(--muted)', fontSize: '19px' }}>
       {msg}
     </div>
   );

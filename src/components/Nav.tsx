@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import type { CSSProperties } from 'react';
+import { useTheme } from '../ThemeContext';
 
 interface NavProps {
   activeLab: string;
@@ -14,6 +15,7 @@ const LAB_ITEMS = [
 ];
 
 export default function Nav({ activeLab, onSelectLab }: NavProps) {
+  const { mode, toggle } = useTheme();
   const [labOpen, setLabOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -28,7 +30,7 @@ export default function Nav({ activeLab, onSelectLab }: NavProps) {
   const linkStyle: CSSProperties = {
     color: 'var(--muted)',
     textDecoration: 'none',
-    fontSize: '14px',
+    fontSize: '18px',
     fontWeight: 500,
   };
 
@@ -41,7 +43,7 @@ export default function Nav({ activeLab, onSelectLab }: NavProps) {
     color: active ? 'var(--text)' : 'var(--muted)',
     border: 'none',
     borderRadius: 0,
-    fontSize: '14px',
+    fontSize: '18px',
     fontWeight: 500,
     cursor: 'pointer',
   });
@@ -58,20 +60,26 @@ export default function Nav({ activeLab, onSelectLab }: NavProps) {
         background: 'var(--bg)',
       }}
     >
-      <div style={{ fontSize: '14px', fontWeight: 600, letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--accent)' }}>
+      <div
+        onClick={() => onSelectLab('home')}
+        style={{ fontSize: '18px', fontWeight: 600, letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--accent)', cursor: 'pointer' }}
+      >
         Stochastic
       </div>
-      <nav style={{ display: 'flex', gap: '28px', alignItems: 'center', fontSize: '14px' }} aria-label="main">
+      <nav style={{ display: 'flex', gap: '28px', alignItems: 'center', fontSize: '18px' }} aria-label="main">
         <a
           href="#"
-          onClick={(e) => { e.preventDefault(); onSelectLab('week1'); }}
-          style={{ ...linkStyle, color: activeLab === 'week1' ? 'var(--text)' : 'var(--muted)' }}
+          onClick={(e) => { e.preventDefault(); onSelectLab('home'); }}
+          style={{ ...linkStyle, color: activeLab === 'home' ? 'var(--text)' : 'var(--muted)' }}
         >
           Home
         </a>
 
-        <div ref={wrapRef} style={{ position: 'relative' }}>
-          <button
+          <button onClick={toggle} style={{ ...linkStyle, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
+            {mode === 'dark' ? 'Light' : 'Dark'}
+          </button>
+          <div ref={wrapRef} style={{ position: 'relative' }}>
+            <button
             onClick={() => setLabOpen((o) => !o)}
             style={{
               ...linkStyle,
@@ -111,8 +119,8 @@ export default function Nav({ activeLab, onSelectLab }: NavProps) {
           )}
         </div>
 
-        <a href="https://github.com" target="_blank" rel="noreferrer" style={linkStyle}>Github</a>
-        <a href="#contact" style={linkStyle}>Contact</a>
+        <a href="https://github.com/TheLordIcy/Stochastic" target="_blank" rel="noreferrer" style={linkStyle}>Github</a>
+        <a href="https://icyy.pages.dev/" style={linkStyle}>Contact</a>
       </nav>
     </header>
   );

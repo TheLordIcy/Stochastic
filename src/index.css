@@ -1,4 +1,5 @@
-:root {
+:root,
+[data-theme="dark"] {
   --bg: #0b0f19;
   --surface: #111827;
   --border: #1f2937;
@@ -11,16 +12,30 @@
   --shadow: none;
 }
 
+[data-theme="light"] {
+  --bg: #eef0ff;
+  --surface: #ffffff;
+  --border: #c8cdf5;
+  --text: #1a1b2e;
+  --muted: #5a607a;
+  --accent: #6366f1;
+  --curve: #db2777;
+  --accent-bg: rgba(99, 102, 241, 0.08);
+  --accent-border: rgba(99, 102, 241, 0.35);
+  --shadow: none;
+}
+
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 16px;
+  font-family: "Inter", "DM Sans", "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 18px;
   font-weight: 500;
   line-height: 1.5;
+  font-variant-numeric: tabular-nums;
 }
 
 #root {
@@ -33,4 +48,48 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
+
+.num {
+  font-family: "JetBrains Mono", "IBM Plex Mono", "Roboto Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.title-serif {
+  font-family: "STIX Two Text", "Source Serif 4", "Source Serif Pro", Georgia, serif;
+}
+
+html {
+  scrollbar-color: var(--border) var(--bg);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 0;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+button {
+  border-radius: 8px;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
